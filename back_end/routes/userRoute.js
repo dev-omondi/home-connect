@@ -7,8 +7,8 @@ import { registerUser,
     deleteUser,
     updateRole,
     getUsers
- } from "../controllers/userController"
- import { protect,authorizeUser } from "../middleware/protect"
+ } from "../controllers/userController.js"
+ import { protect,authorizeUser } from "../middleware/protect.js"
  const router=express.Router()
 
  router.route("/register").post(registerUser)
