@@ -14,7 +14,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
-app.use("/api/useer",userRouter)
+app.use("/api/user",userRouter)
 
 //database connection
 connectDb()

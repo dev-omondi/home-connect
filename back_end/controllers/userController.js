@@ -43,7 +43,7 @@ const loginUser=asyncHandler(async(req,res)=>{
         res.status(401)
         throw new Error("All the fields are mandatory")
     }
-    const user=await Users.findOne(email)
+    const user=await Users.findOne({email})
     if (!user) {
         res.status(404)
         throw new Error("User not found")
@@ -103,7 +103,7 @@ const updateUser=asyncHandler(async(req,res)=>{
 //@api-----------------------------------------DELETE/api/user/:id
 //@access----------------------------------------private
 const deleteUser=asyncHandler(async(req,res)=>{
-    const user=await Users.findById(req.params._id)
+    const user=await Users.findById(req.params.id)
     if(!user){
         res.status(404)
         throw new Error("User not Found");
@@ -140,14 +140,14 @@ const updateRole=asyncHandler(async(req,res)=>{
         res.status(403)
         throw new Error("Unauthorised,can not update user roles")
     }
-    const user=await Users.findById(req.params._id)
+    const user=await Users.findById(req.params.id)
     if (!user) {
         res.status(404)
         throw new Error("User not found")
     }
     user.role=req.body.role||user.role
     const updatedUser=await user.save()
-    res.status(200).json(updateUser)
+    res.status(200).json(updatedUser)
 })
 export{registerUser,
     loginUser,
