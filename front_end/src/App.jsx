@@ -8,7 +8,7 @@ import Loginpage from './pages/Loginpage'
 import{Route,Routes} from "react-router-dom"
 const App = () => {
   return (
-    <div className='mt-30'>
+    <div >
       <Routes>
         <Route path='/' element={<Layout/>}>
           <Route index element={<Homepage/>}/>
