@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 const Navbar = () => {
     const [open,setOpen]=useState(false)
   return (
-    <nav className=' bg-slate-200 fixed top-0 left-0 w-full shadow-md '>
+    <nav className=' bg-slate-200 sticky top-0 left-0 w-full shadow-md '>
     <div className='flex items-center justify-between max-w-6xl px-3 py-4 mx-auto '>
         <h2 className='text-green-400 font-bold'>KEJAConnect</h2>
         <section>
@@ -38,7 +38,7 @@ const Navbar = () => {
         </section>
         <section className='flex gap-4'> 
             <Link to={"/login"}>Login</Link>
-            <Link>Register</Link>
+            <Link to={"/register"}>Register</Link>
         </section>
     </div>
     </nav>
