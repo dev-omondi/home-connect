@@ -37,7 +37,7 @@ const Navbar = () => {
 
         </section>
         <section className='flex gap-4'> 
-            <Link>Login</Link>
+            <Link to={"/login"}>Login</Link>
             <Link>Register</Link>
         </section>
     </div>
