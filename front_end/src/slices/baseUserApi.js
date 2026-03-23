@@ -38,6 +38,13 @@ const baseApi=rooApi.injectEndpoints({
         getUsers:builder.query({
             query:()=>`${USER_URL}`,
             providesTags:["Users"]
+        }),
+        logout:builder.mutation({
+            query:()=>({
+                url:`${USER_URL}/logout`,
+                method:"POST"
+            }),
+            invalidatesTags:["Users"]
         })
     })
 })
@@ -46,5 +53,6 @@ export const{useRegisterMutation,
     useDeleteUserMutation,
     useGetUsersQuery,
     useLoginMutation,
+    useLogoutMutation,
     useUpdateuserMutation
 }=baseApi

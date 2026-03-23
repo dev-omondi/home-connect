@@ -24,7 +24,7 @@ const Registerpage = () => {
   const[password,setPassword]=useState("")
   const[togglePassword,setTogglePassword]=useState(false)
   const[confirmPassword,setConfirmPassword]=useState("")
-
+  const[toggleConfirmPassword,setToggleConfirmPassword]=useState("")
   const navigate=useNavigate()
   const dispatch=useDispatch()
   const userInfo=useSelector((state)=>state.auth.userInfo)
@@ -38,6 +38,9 @@ const Registerpage = () => {
 
   const hundeSubmit=async(e)=>{
     e.preventDefault()
+    if (confirmPassword!==password) {
+      console.log("password dont match")
+    }
     try {
       const res=await register({name,email,password}).unwrap()
       dispatch(setCredentials({...res}))
@@ -98,17 +101,17 @@ const Registerpage = () => {
               <Label>Confirm Password</Label>
               <div className='relative'>
                 <Input
-                type={togglePassword?"text":"password"}
-                value={password}
+                type={toggleConfirmPassword?"text":"password"}
+                value={confirmPassword}
                 onChange={(e)=>setConfirmPassword(e.target.value)}
                 />
                 <button
-                className='absolute right-4 top-1/2 -translate-y-1/2'
+                className='absolute right-4 top-1/2 -translate-y-1/2 text-green-400'
                 type='button'
-                onClick={()=>setTogglePassword(!togglePassword)}
+                onClick={()=>setToggleConfirmPassword(!toggleConfirmPassword)}
                 >
                   {
-                    togglePassword?<EyeOff/>:<Eye/>
+                    toggleConfirmPassword?<EyeOff/>:<Eye/>
                   }
                 </button>
               </div>
