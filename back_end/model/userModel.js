@@ -21,6 +21,9 @@ const userSchema=mongoose.Schema({
         enum:["user","manager","admin"],
         default:"user"
     },
+    img:{
+        type:String,
+    }
 },{timestamps:true})
 
 userSchema.pre("save",async function () {

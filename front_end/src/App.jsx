@@ -8,6 +8,7 @@ import Loginpage from './pages/Loginpage'
 import{Route,Routes} from "react-router-dom"
 import Protectpage from './pages/Protectpage'
 import Profilepage from './pages/Profilepage'
+import Listingpage from './pages/Listingpage'
 const App = () => {
   return (
     <div >
@@ -18,6 +19,7 @@ const App = () => {
           <Route path='/register' element={<Registerpage/>}/>
           <Route element={<Protectpage/>}>
             <Route path='/profile' element={<Profilepage/>}/>
+            <Route path='/listing' element={<Listingpage/>}/>
           </Route>
         </Route>
       </Routes>
