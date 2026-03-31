@@ -1,59 +1,152 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import app from '@/firebase'
+import {getStorage,ref,getDownloadURL,uploadBytesResumable} from "firebase/storage"
+import { useState } from 'react'
 
 const Listingpage = () => {
+  const[files,setFiles]=useState([])
+  const[formData,setFormData]=useState({
+    imgUrl:[]
+  })
+  const[imgError,setImgError]=useState(null)
+
+  const storeFile=(file)=>{
+    return new Promise((resolve,reject)=>{
+      const storage=getStorage(app)
+      const filePath=new Date().getTime()+file.name
+      const storageRef=ref(storage,filePath)
+      const uploadTask=uploadBytesResumable(storageRef,file)
+
+      uploadTask.on("state_changed",
+        (snapshot)=>{
+          const progress=(snapshot.bytesTransferred/snapshot.totalBytes)*100
+          console.log(`The Upload is ${progress}% done`)
+        },
+        (error)=>{
+          console.log(error)
+          reject(error)
+        },
+        async()=>{
+          try {
+            const downloadUrl=await getDownloadURL(uploadTask.snapshot.ref)
+            resolve(downloadUrl)
+          } catch (error) {
+            reject(error)
+          }
+        }
+      )
+    })
+  }
+
+  const handleImageUpload=()=>{
+    const promises=[]
+    const maxSize=2*1024*1024
+    const totalFiles=files.length+formData.imgUrl.length
+    setImgError(null)
+    if (files.length===0) {
+      setImgError("Select atleast 1 image")
+      return
+    } else if(totalFiles>6){
+      setImgError("You can only upload upto 6 images")
+      return
+    }else{
+      for(let file of files){
+        if(file.size>maxSize){
+          setImgError("Every file size should be less than 2mbs")
+          return
+        }
+        promises.push(storeFile(file))
+      }
+      Promise.all(promises).then((urls)=>{
+        setFormData((prev)=>({
+          ...prev,
+          imgUrl:[...(prev.imgUrl||[]),...urls]
+        }))
+      }).catch((error)=>{
+        console.log(error)
+        setImgError("Upload Failed try again")
+      })
+    }
+    
+  }
+
+  const deleteImage=(index)=>{
+    setFormData({
+      ...formData,
+      imgUrl:formData.imgUrl.filter((_,i)=>i!==index)
+    })
+  }
   return (
     <div className='max-w-4xl mx-auto '>
       <h1 className='font-bold text-center text-green-400 mt-6'>List Your Property</h1>
-        <form className='mt-6 flex flex-col gap-3 sm:flex flex-wrap '>
+        <form className='mt-6 flex flex-col gap-6 sm:flex-row  '>
          <div>
           <Input
           type="text"
-          placeHolder="Apartment Name"
+          placeholder="Apartment Name"
           className="rounded mb-3"
           />
           <Input 
           type={"text"}
-          placeHolder="Location"
+          placeholder="Location"
           className="rounded mb-3"
 
           />
           <Textarea
-          placeHolder="Apartment Description"
+          placeholder="Apartment Description"
           className="rounded mb-3"
           />
-         </div>
-         <div className='flex gap-4 w-full'>
-          <section>
+           <section className='flex flex-row gap-6 justify-center sm:justify-between p-3'>
             <select className='rounded p-2 border shadow-md'>
             <option value="" disabled>Select Category</option>
             <option value="rentals">Rentals</option>
             <option value="Hostels">Hostels</option>
           </select>
-          <select className='rounded p-2 border shadow-md'>
+          <select className='rounded p-1 border shadow-md'>
             <option value="" disabled>Select Type</option>
             <option value="bedsitter">BedSitter</option>
             <option value="1bedroom">1 BedRoom</option>
             <option value="singleroom">Single Room</option>
           </select>
           </section>
-          <section>
-            <Input
+           <Input
             type={"number"}
-            placeHolder="Price"
+            placeholder="Price"
             className={"rounded mb-3"}
             />
+         </div>  
+         <div className='flex flex-col gap-3 w-full'>
+          <section className='w-full flex item gap-4 items-end'>
+            <div>
+            <p>Images:The first image will be used as cover</p>
             <Input
-            type={"text"}
-            placeHolder="Add Images(The first image will beused as  cover photo)"
+            type={"file"}
+            className={""}
+            placeholder="Add Images"
             />
+            </div>
+            <button className='px-3 py-2 rounded bg-green-300 hover:bg-green-500 cursor-pointer hover:transition-all duration-200 text-sm'>Upload</button>
           </section>
-         
+            {
+              formData.imgUrl.length>0&&
+             formData.imgUrl.map((url,index)=>(
+              <div className='flex items-center gap-6'key={index}>
+                <img src={url} alt={`Uploaded-${index}`} 
+                className='h-6 w-6 object-cover rounded shadow-2xl '
+                />
+                <button className='bg-gray-50 cursor-pointer capitalize text-red-400 hover:text-red-600 transition-colors duration-200'
+                type='button'
+                onClick={()=>deleteImage(index)}
+                >Delete</button>
+              </div>
+             ))
+            }
+          <Button className={"w-40 cursor-pointer rounded"}>List Property</Button>
          </div>
-          <Button className={"w-30"}>List Property</Button>
+           
         </form>
     </div>
   )
