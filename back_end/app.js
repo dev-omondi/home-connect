@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { notFound ,errorHandler} from "./middleware/errorHandler.js";
 import connectDb from "./config/dbConnect.js";
 import userRouter from "./routes/userRoute.js";
+import listingRouter from "./routes/listingRoute.js";
 dotenv.config()
 
 const app=express()
@@ -15,7 +16,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
 app.use("/api/user",userRouter)
-
+app.use("/api/listing",listingRouter)
 //database connection
 connectDb()
 

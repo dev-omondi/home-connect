@@ -9,7 +9,14 @@ import { useState } from 'react'
 const Listingpage = () => {
   const[files,setFiles]=useState([])
   const[formData,setFormData]=useState({
-    imgUrl:[]
+    imgUrl:[],
+    price:"",
+    name:"",
+    location:"",
+    description:"",
+    type:"",
+    categotry:"",
+    
   })
   const[imgError,setImgError]=useState(null)
 
@@ -40,7 +47,6 @@ const Listingpage = () => {
       )
     })
   }
-
   const handleImageUpload=()=>{
     const promises=[]
     const maxSize=2*1024*1024
@@ -79,6 +85,13 @@ const Listingpage = () => {
       imgUrl:formData.imgUrl.filter((_,i)=>i!==index)
     })
   }
+   const handleInputChange=(e)=>{
+  const {name,value,checked,type}=e.target
+  setFormData((prev)=>({
+    ...prev,
+    [name]:type==="checkbox"?checked:type==="number"?Number(value):value
+  }))
+ }
   return (
     <div className='max-w-4xl mx-auto '>
       <h1 className='font-bold text-center text-green-400 mt-6'>List Your Property</h1>
@@ -86,26 +99,44 @@ const Listingpage = () => {
          <div>
           <Input
           type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleInputChange}
           placeholder="Apartment Name"
           className="rounded mb-3"
           />
           <Input 
           type={"text"}
+          name="location"
+          value={formData.location}
+          onChange={handleInputChange}
           placeholder="Location"
           className="rounded mb-3"
 
           />
           <Textarea
           placeholder="Apartment Description"
+          name="description"
+          value={formData.description}
+          type="text"
+          onChange={handleInputChange}
           className="rounded mb-3"
           />
            <section className='flex flex-row gap-6 justify-center sm:justify-between p-3'>
-            <select className='rounded p-2 border shadow-md'>
+            <select className='rounded p-2 border shadow-md'
+            name="categotry"
+            value={formData.categotry}
+            onChange={handleInputChange}
+            >
             <option value="" disabled>Select Category</option>
             <option value="rentals">Rentals</option>
             <option value="Hostels">Hostels</option>
           </select>
-          <select className='rounded p-1 border shadow-md'>
+          <select className='rounded p-1 border shadow-md'
+          name='type'
+          value={formData.type}
+          onChange={handleInputChange}
+          >
             <option value="" disabled>Select Type</option>
             <option value="bedsitter">BedSitter</option>
             <option value="1bedroom">1 BedRoom</option>
@@ -114,8 +145,12 @@ const Listingpage = () => {
           </section>
            <Input
             type={"number"}
+            min={10}
+            name="price"
+            value={formData.price}
+            onChange={handleInputChange}
             placeholder="Price"
-            className={"rounded mb-3"}
+            className={"rounded mb-3 text-center"}
             />
          </div>  
          <div className='flex flex-col gap-3 w-full'>
@@ -124,7 +159,8 @@ const Listingpage = () => {
             <p>Images:The first image will be used as cover</p>
             <Input
             type={"file"}
-            className={""}
+            mutiple
+            onChange={handleImageUpload}
             placeholder="Add Images"
             />
             </div>
